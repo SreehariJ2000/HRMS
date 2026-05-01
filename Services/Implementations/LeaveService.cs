@@ -12,19 +12,23 @@ namespace HRMS.Services.Implementations
         private readonly ILeaveRequestRepository _leaveRequestRepository;
         private readonly ILeaveBalanceRepository _leaveBalanceRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IApplicationUserService _applicationUserService;
 
         public LeaveService(
             ILeaveRequestRepository leaveRequestRepository,
             ILeaveBalanceRepository leaveBalanceRepository,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            IApplicationUserService applicationUserService)
         {
             _leaveRequestRepository = leaveRequestRepository;
             _leaveBalanceRepository = leaveBalanceRepository;
             _userRepository = userRepository;
+            _applicationUserService = applicationUserService;
         }
 
-        public async Task<EmployeeDashboardVM> GetEmployeeDashboardAsync(int userId)
+        public async Task<EmployeeDashboardVM> GetEmployeeDashboardAsync()
         {
+            var userId = _applicationUserService.GetUserId() ?? throw new UnauthorizedAccessException("User not found.");
             var user = await _userRepository.GetByIdAsync(userId);
             if (user == null)
                 throw new InvalidOperationException("User not found.");
@@ -65,8 +69,9 @@ namespace HRMS.Services.Implementations
             };
         }
 
-        public async Task<(bool Success, string Message)> ApplyLeaveAsync(int userId, LeaveRequestVM model)
+        public async Task<(bool Success, string Message)> ApplyLeaveAsync(LeaveRequestVM model)
         {
+            var userId = _applicationUserService.GetUserId() ?? throw new UnauthorizedAccessException("User not found.");
             var user = await _userRepository.GetByIdAsync(userId);
             if (user == null)
                 return (false, "User not found.");
@@ -164,8 +169,9 @@ namespace HRMS.Services.Implementations
             return (true, "Leave request rejected.");
         }
 
-        public async Task<List<LeaveRequestDetailVM>> GetLeaveHistoryAsync(int userId)
+        public async Task<List<LeaveRequestDetailVM>> GetLeaveHistoryAsync()
         {
+            var userId = _applicationUserService.GetUserId() ?? throw new UnauthorizedAccessException("User not found.");
             var requests = await _leaveRequestRepository.GetByUserIdAsync(userId);
             return requests.Select(MapToDetailVM).ToList();
         }
@@ -176,8 +182,9 @@ namespace HRMS.Services.Implementations
             return requests.Select(MapToDetailVMWithUser).ToList();
         }
 
-        public async Task<List<LeaveBalanceVM>> GetLeaveBalancesAsync(int userId)
+        public async Task<List<LeaveBalanceVM>> GetLeaveBalancesAsync()
         {
+            var userId = _applicationUserService.GetUserId() ?? throw new UnauthorizedAccessException("User not found.");
             var currentYear = DateTime.UtcNow.Year;
             var balances = await _leaveBalanceRepository.GetByUserAsync(userId, currentYear);
             return balances.Select(b => new LeaveBalanceVM

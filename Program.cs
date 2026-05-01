@@ -1,9 +1,6 @@
 using HRMS.Data;
 using HRMS.Middlewares;
-using HRMS.Repositories.Implementations;
-using HRMS.Repositories.Interfaces;
-using HRMS.Services.Implementations;
-using HRMS.Services.Interfaces;
+using HRMS.Extensions;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,15 +21,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.SlidingExpiration = true;
     });
 
-// --- Dependency Injection: Repositories ---
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<ILeaveBalanceRepository, LeaveBalanceRepository>();
-builder.Services.AddScoped<ILeaveRequestRepository, LeaveRequestRepository>();
-
-// --- Dependency Injection: Services ---
-builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddScoped<IEmployeeService, EmployeeService>();
-builder.Services.AddScoped<ILeaveService, LeaveService>();
+// --- Register Application Services (DI) ---
+builder.Services.AddApplicationServices();
 
 builder.Services.AddControllersWithViews();
 

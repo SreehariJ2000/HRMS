@@ -16,15 +16,9 @@ namespace HRMS.Controllers
             _leaveService = leaveService;
         }
 
-        private int GetCurrentUserId()
-        {
-            return int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        }
-
         public async Task<IActionResult> Dashboard()
         {
-            var userId = GetCurrentUserId();
-            var model = await _leaveService.GetEmployeeDashboardAsync(userId);
+            var model = await _leaveService.GetEmployeeDashboardAsync();
             return View(model);
         }
 
@@ -41,8 +35,7 @@ namespace HRMS.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var userId = GetCurrentUserId();
-            var (success, message) = await _leaveService.ApplyLeaveAsync(userId, model);
+            var (success, message) = await _leaveService.ApplyLeaveAsync(model);
 
             if (!success)
             {
@@ -56,15 +49,13 @@ namespace HRMS.Controllers
 
         public async Task<IActionResult> LeaveHistory()
         {
-            var userId = GetCurrentUserId();
-            var history = await _leaveService.GetLeaveHistoryAsync(userId);
+            var history = await _leaveService.GetLeaveHistoryAsync();
             return View(history);
         }
 
         public async Task<IActionResult> LeaveBalance()
         {
-            var userId = GetCurrentUserId();
-            var balances = await _leaveService.GetLeaveBalancesAsync(userId);
+            var balances = await _leaveService.GetLeaveBalancesAsync();
             return View(balances);
         }
     }

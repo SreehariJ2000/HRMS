@@ -2,11 +2,42 @@ using Microsoft.EntityFrameworkCore;
 using HRMS.Models;
 using HRMS.Models.Enums;
 
+using HRMS.Services.Interfaces;
+
 namespace HRMS.Data
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+        private readonly IApplicationUserService _applicationUserService;
+
+        public AppDbContext(
+            DbContextOptions<AppDbContext> options,
+            IApplicationUserService applicationUserService) : base(options)
+        {
+            _applicationUserService = applicationUserService;
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            var userId = _applicationUserService.GetUserId();
+            var now = DateTime.UtcNow;
+
+            foreach (var entry in ChangeTracker.Entries<AuditedEntity>())
+            {
+                if (entry.State == EntityState.Added)
+                {
+                    entry.Entity.CreatedUserId = userId;
+                    entry.Entity.CreationTime = now;
+                }
+                else if (entry.State == EntityState.Modified)
+                {
+                    entry.Entity.ModifiedUserId = userId;
+                    entry.Entity.ModifiedDate = now;
+                }
+            }
+
+            return base.SaveChangesAsync(cancellationToken);
+        }
 
         public DbSet<User> Users { get; set; }
         public DbSet<LeaveBalance> LeaveBalances { get; set; }
