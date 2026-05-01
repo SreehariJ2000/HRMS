@@ -1,0 +1,86 @@
+@model List<HRMS.ViewModels.LeaveRequestDetailVM>
+@{
+    ViewData["Title"] = "Leave History";
+}
+
+<div class="page-header">
+    <h2><i class="bi bi-clock-history"></i> Leave History</h2>
+    <p class="text-muted mb-0">View all your past leave applications</p>
+</div>
+
+<div class="card fade-in">
+    <div class="card-body p-0">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Leave Type</th>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Days</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                            <th>Admin Remarks</th>
+                            <th>Applied On</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ int sn = 1; }
+                        @foreach (var request in Model)
+                        {
+                            var statusClass = request.Status switch
+                            {
+                                HRMS.Models.Enums.LeaveStatus.Pending => "badge-pending",
+                                HRMS.Models.Enums.LeaveStatus.Approved => "badge-approved",
+                                HRMS.Models.Enums.LeaveStatus.Rejected => "badge-rejected",
+                                _ => ""
+                            };
+                            <tr>
+                                <td>@(sn++)</td>
+                                <td>
+                                    @switch (request.LeaveType)
+                                    {
+                                        case HRMS.Models.Enums.LeaveType.CasualLeave:
+                                            <span class="badge bg-info">Casual</span>
+                                            break;
+                                        case HRMS.Models.Enums.LeaveType.SickLeave:
+                                            <span class="badge bg-warning text-dark">Sick</span>
+                                            break;
+                                        case HRMS.Models.Enums.LeaveType.EarnedLeave:
+                                            <span class="badge bg-success">Earned</span>
+                                            break;
+                                    }
+                                </td>
+                                <td>@request.FromDate.ToString("dd MMM yyyy")</td>
+                                <td>@request.ToDate.ToString("dd MMM yyyy")</td>
+                                <td><span class="fw-bold">@request.RequestedDays</span></td>
+                                <td>
+                                    <span title="@request.Reason">
+                                        @(request.Reason.Length > 40 ? request.Reason.Substring(0, 40) + "..." : request.Reason)
+                                    </span>
+                                </td>
+                                <td><span class="badge @statusClass">@request.Status</span></td>
+                                <td>@(request.AdminRemarks ?? "-")</td>
+                                <td>@request.CreatedAt.ToString("dd MMM yyyy")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <i class="bi bi-calendar"></i>
+                <h5>No Leave History</h5>
+                <p>You haven't applied for any leave yet.</p>
+                <a asp-action="ApplyLeave" class="btn btn-primary mt-2">
+                    <i class="bi bi-calendar-plus"></i> Apply for Leave
+                </a>
+            </div>
+        }
+    </div>
+</div>

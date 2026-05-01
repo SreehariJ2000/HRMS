@@ -1,0 +1,465 @@
+/* ============================
+   HRMS - Leave Management System
+   Custom Stylesheet
+   ============================ */
+
+:root {
+    --primary: #4361ee;
+    --primary-dark: #3a0ca3;
+    --secondary: #7209b7;
+    --accent: #f72585;
+    --success: #06d6a0;
+    --warning: #ffd166;
+    --danger: #ef476f;
+    --info: #118ab2;
+    --dark: #1a1a2e;
+    --card-bg: #ffffff;
+    --body-bg: #f0f2f5;
+    --text-primary: #16213e;
+    --text-secondary: #6c757d;
+    --border-color: #e0e0e0;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
+    --gradient-primary: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+    --gradient-accent: linear-gradient(135deg, #f72585 0%, #7209b7 100%);
+    --gradient-success: linear-gradient(135deg, #06d6a0 0%, #118ab2 100%);
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+}
+
+body {
+    background-color: var(--body-bg);
+    color: var(--text-primary);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== Navbar ===== */
+.navbar {
+    background: var(--gradient-primary) !important;
+    padding: 0.75rem 0;
+}
+
+.navbar-brand {
+    font-size: 1.4rem;
+    letter-spacing: 1px;
+}
+
+.nav-link {
+    transition: all 0.2s ease;
+    border-radius: var(--radius-sm);
+    margin: 0 2px;
+    padding: 0.5rem 0.75rem !important;
+}
+
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+}
+
+/* ===== Cards ===== */
+.card {
+    border: none;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.card-header {
+    border-bottom: 1px solid var(--border-color);
+    background: transparent;
+    font-weight: 600;
+    padding: 1rem 1.25rem;
+}
+
+/* ===== Dashboard Stat Cards ===== */
+.stat-card {
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    min-height: 140px;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.stat-card::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: -20px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.stat-card .stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+}
+
+.stat-card .stat-label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-card .stat-icon {
+    font-size: 2.5rem;
+    opacity: 0.3;
+    position: absolute;
+    right: 1.5rem;
+    top: 1.5rem;
+}
+
+.stat-primary { background: var(--gradient-primary); }
+.stat-accent { background: var(--gradient-accent); }
+.stat-success { background: var(--gradient-success); }
+.stat-warning { background: linear-gradient(135deg, #ffd166 0%, #ef476f 100%); }
+
+/* ===== Login Page ===== */
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gradient-primary);
+    position: relative;
+}
+
+.login-container::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.login-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem;
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+    z-index: 1;
+}
+
+.login-card .login-logo {
+    font-size: 3rem;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.login-card h2 {
+    color: var(--text-primary);
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.login-card .subtitle {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+}
+
+/* ===== Form Styles ===== */
+.form-control, .form-select {
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--border-color);
+    padding: 0.65rem 0.75rem;
+    transition: all 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+}
+
+.form-label {
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 0.35rem;
+}
+
+/* ===== Buttons ===== */
+.btn {
+    border-radius: var(--radius-sm);
+    padding: 0.55rem 1.25rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-primary {
+    background: var(--gradient-primary);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+}
+
+.btn-accent {
+    background: var(--gradient-accent);
+    color: #fff;
+}
+
+.btn-accent:hover {
+    opacity: 0.9;
+    color: #fff;
+}
+
+.btn-success {
+    background: var(--success);
+    border: none;
+}
+
+.btn-danger {
+    background: var(--danger);
+    border: none;
+}
+
+/* ===== Tables ===== */
+.table {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.table thead th {
+    background: var(--dark);
+    color: #fff;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+    padding: 0.85rem 1rem;
+    border: none;
+}
+
+.table tbody td {
+    padding: 0.85rem 1rem;
+    vertical-align: middle;
+    border-color: var(--border-color);
+}
+
+.table tbody tr {
+    transition: background 0.15s ease;
+}
+
+.table tbody tr:hover {
+    background: rgba(67, 97, 238, 0.04);
+}
+
+/* ===== Badges ===== */
+.badge {
+    padding: 0.45em 0.85em;
+    font-weight: 500;
+    font-size: 0.8rem;
+    border-radius: 20px;
+}
+
+.badge-pending {
+    background: rgba(255, 209, 102, 0.2);
+    color: #b8860b;
+}
+
+.badge-approved {
+    background: rgba(6, 214, 160, 0.2);
+    color: #05845c;
+}
+
+.badge-rejected {
+    background: rgba(239, 71, 111, 0.2);
+    color: #c62828;
+}
+
+/* ===== Leave Balance Cards ===== */
+.balance-card {
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    text-align: center;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.balance-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.balance-card .balance-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.balance-card .balance-value {
+    font-size: 2.2rem;
+    font-weight: 700;
+}
+
+.balance-card .balance-total {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.balance-casual {
+    background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+    border-color: #00bcd4;
+}
+
+.balance-casual .balance-icon,
+.balance-casual .balance-value { color: #00838f; }
+
+.balance-sick {
+    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
+    border-color: #e91e63;
+}
+
+.balance-sick .balance-icon,
+.balance-sick .balance-value { color: #ad1457; }
+
+.balance-earned {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border-color: #4caf50;
+}
+
+.balance-earned .balance-icon,
+.balance-earned .balance-value { color: #2e7d32; }
+
+/* ===== Page Headers ===== */
+.page-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.page-header h2 {
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.page-header .breadcrumb {
+    margin-bottom: 0;
+    font-size: 0.85rem;
+}
+
+/* ===== Alerts ===== */
+.alert {
+    border-radius: var(--radius-sm);
+    border: none;
+    font-weight: 500;
+}
+
+/* ===== Footer ===== */
+.footer {
+    margin-top: auto;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ===== Animations ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.4s ease forwards;
+}
+
+/* ===== Responsive ===== */
+@@media (max-width: 768px) {
+    .stat-card .stat-value {
+        font-size: 1.8rem;
+    }
+
+    .login-card {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+
+    .balance-card .balance-value {
+        font-size: 1.6rem;
+    }
+}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--body-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-dark);
+}
+
+/* ===== Modal ===== */
+.modal-content {
+    border-radius: var(--radius-md);
+    border: none;
+    box-shadow: var(--shadow-lg);
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-footer {
+    border-top: 1px solid var(--border-color);
+}
+
+/* ===== Empty State ===== */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    color: var(--text-secondary);
+}
+
+.empty-state i {
+    font-size: 4rem;
+    opacity: 0.3;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.empty-state h5 {
+    font-weight: 600;
+    color: var(--text-primary);
+}

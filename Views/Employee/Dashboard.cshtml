@@ -1,0 +1,132 @@
+@model HRMS.ViewModels.EmployeeDashboardVM
+@{
+    ViewData["Title"] = "Employee Dashboard";
+}
+
+<div class="page-header">
+    <h2><i class="bi bi-speedometer2"></i> My Dashboard</h2>
+    <p class="text-muted mb-0">Welcome, <strong>@Model.EmployeeName</strong> | @Model.EmployeeCode | @Model.Department</p>
+</div>
+
+<!-- Leave Balance Cards -->
+<div class="row g-4 mb-4 fade-in">
+    @foreach (var balance in Model.LeaveBalances)
+    {
+        var cardClass = balance.LeaveType switch
+        {
+            HRMS.Models.Enums.LeaveType.CasualLeave => "balance-casual",
+            HRMS.Models.Enums.LeaveType.SickLeave => "balance-sick",
+            HRMS.Models.Enums.LeaveType.EarnedLeave => "balance-earned",
+            _ => ""
+        };
+        var icon = balance.LeaveType switch
+        {
+            HRMS.Models.Enums.LeaveType.CasualLeave => "bi-emoji-sunglasses",
+            HRMS.Models.Enums.LeaveType.SickLeave => "bi-heart-pulse",
+            HRMS.Models.Enums.LeaveType.EarnedLeave => "bi-award",
+            _ => "bi-calendar"
+        };
+
+        <div class="col-md-4">
+            <div class="card balance-card @cardClass">
+                <div class="balance-icon">
+                    <i class="bi @icon"></i>
+                </div>
+                <h6 class="fw-bold">@balance.LeaveTypeName</h6>
+                <div class="balance-value">@balance.Balance</div>
+                <div class="balance-total">
+                    Used @balance.Used of @balance.TotalAllocated days
+                </div>
+                <div class="progress mt-2" style="height: 6px;">
+                    @{
+                        var percentage = balance.TotalAllocated > 0 ? (balance.Used * 100 / balance.TotalAllocated) : 0;
+                    }
+                    <div class="progress-bar" style="width: @percentage%"></div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Quick Action -->
+<div class="row g-4 mb-4">
+    <div class="col-12">
+        <a asp-action="ApplyLeave" class="btn btn-primary btn-lg">
+            <i class="bi bi-calendar-plus"></i> Apply for Leave
+        </a>
+    </div>
+</div>
+
+<!-- Recent Leave Requests -->
+<div class="card fade-in">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-clock-history"></i> Recent Leave Requests</span>
+        <a asp-action="LeaveHistory" class="btn btn-sm btn-outline-primary">View All</a>
+    </div>
+    <div class="card-body p-0">
+        @if (Model.RecentRequests.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Leave Type</th>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Days</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var request in Model.RecentRequests)
+                        {
+                            var statusClass = request.Status switch
+                            {
+                                HRMS.Models.Enums.LeaveStatus.Pending => "badge-pending",
+                                HRMS.Models.Enums.LeaveStatus.Approved => "badge-approved",
+                                HRMS.Models.Enums.LeaveStatus.Rejected => "badge-rejected",
+                                _ => ""
+                            };
+                            <tr>
+                                <td>
+                                    @switch (request.LeaveType)
+                                    {
+                                        case HRMS.Models.Enums.LeaveType.CasualLeave:
+                                            <span class="badge bg-info">Casual</span>
+                                            break;
+                                        case HRMS.Models.Enums.LeaveType.SickLeave:
+                                            <span class="badge bg-warning text-dark">Sick</span>
+                                            break;
+                                        case HRMS.Models.Enums.LeaveType.EarnedLeave:
+                                            <span class="badge bg-success">Earned</span>
+                                            break;
+                                    }
+                                </td>
+                                <td>@request.FromDate.ToString("dd MMM yyyy")</td>
+                                <td>@request.ToDate.ToString("dd MMM yyyy")</td>
+                                <td><span class="fw-bold">@request.RequestedDays</span></td>
+                                <td>
+                                    <span title="@request.Reason">
+                                        @(request.Reason.Length > 30 ? request.Reason.Substring(0, 30) + "..." : request.Reason)
+                                    </span>
+                                </td>
+                                <td><span class="badge @statusClass">@request.Status</span></td>
+                                <td>@(request.AdminRemarks ?? "-")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <i class="bi bi-calendar"></i>
+                <h5>No Leave Requests Yet</h5>
+                <p>You haven't applied for any leave.</p>
+            </div>
+        }
+    </div>
+</div>

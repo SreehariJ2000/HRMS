@@ -1,0 +1,115 @@
+@model HRMS.ViewModels.LeaveRequestVM
+@{
+    ViewData["Title"] = "Apply Leave";
+
+    var leaveTypes = new List<SelectListItem>
+    {
+        new SelectListItem { Value = ((int)HRMS.Models.Enums.LeaveType.CasualLeave).ToString(), Text = "Casual Leave (12 days/year)" },
+        new SelectListItem { Value = ((int)HRMS.Models.Enums.LeaveType.SickLeave).ToString(), Text = "Sick Leave (10 days/year)" },
+        new SelectListItem { Value = ((int)HRMS.Models.Enums.LeaveType.EarnedLeave).ToString(), Text = "Earned Leave (15 days/year)" }
+    };
+}
+
+<div class="page-header">
+    <h2><i class="bi bi-calendar-plus"></i> Apply for Leave</h2>
+    <p class="text-muted mb-0">Submit a new leave application</p>
+</div>
+
+<div class="row justify-content-center fade-in">
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-body p-4">
+                <form asp-action="ApplyLeave" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div asp-validation-summary="All" class="alert alert-danger" style="display:@(ViewData.ModelState.ErrorCount > 0 ? "block" : "none")"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="LeaveType" class="form-label">
+                            <i class="bi bi-list-check"></i> Leave Type
+                        </label>
+                        <select asp-for="LeaveType" class="form-select" asp-items="@leaveTypes">
+                        </select>
+                        <span asp-validation-for="LeaveType" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="FromDate" class="form-label">
+                                <i class="bi bi-calendar-event"></i> From Date
+                            </label>
+                            <input asp-for="FromDate" class="form-control" type="date" id="fromDate" />
+                            <span asp-validation-for="FromDate" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="ToDate" class="form-label">
+                                <i class="bi bi-calendar-event"></i> To Date
+                            </label>
+                            <input asp-for="ToDate" class="form-control" type="date" id="toDate" />
+                            <span asp-validation-for="ToDate" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info py-2 d-none" id="dayCount">
+                        <i class="bi bi-info-circle"></i> Estimated working days: <strong id="dayCountValue">0</strong>
+                        <small class="text-muted">(excludes weekends)</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Reason" class="form-label">
+                            <i class="bi bi-chat-text"></i> Reason
+                        </label>
+                        <textarea asp-for="Reason" class="form-control" rows="3" placeholder="Provide a reason for your leave request (minimum 10 characters)"></textarea>
+                        <span asp-validation-for="Reason" class="text-danger small"></span>
+                    </div>
+
+                    <hr class="my-4" />
+
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Dashboard" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Back
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send"></i> Submit Application
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function calculateBusinessDays() {
+            var fromDate = document.getElementById('fromDate').value;
+            var toDate = document.getElementById('toDate').value;
+
+            if (fromDate && toDate) {
+                var start = new Date(fromDate);
+                var end = new Date(toDate);
+
+                if (end >= start) {
+                    var days = 0;
+                    var current = new Date(start);
+                    while (current <= end) {
+                        var day = current.getDay();
+                        if (day !== 0 && day !== 6) days++;
+                        current.setDate(current.getDate() + 1);
+                    }
+
+                    document.getElementById('dayCountValue').textContent = days;
+                    document.getElementById('dayCount').classList.remove('d-none');
+                } else {
+                    document.getElementById('dayCount').classList.add('d-none');
+                }
+            } else {
+                document.getElementById('dayCount').classList.add('d-none');
+            }
+        }
+
+        document.getElementById('fromDate').addEventListener('change', calculateBusinessDays);
+        document.getElementById('toDate').addEventListener('change', calculateBusinessDays);
+    </script>
+}

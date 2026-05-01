@@ -1,0 +1,71 @@
+@model List<HRMS.ViewModels.LeaveBalanceVM>
+@{
+    ViewData["Title"] = "Leave Balance";
+}
+
+<div class="page-header">
+    <h2><i class="bi bi-pie-chart"></i> Leave Balance</h2>
+    <p class="text-muted mb-0">Your current year leave allocations and usage</p>
+</div>
+
+<div class="row g-4 fade-in">
+    @foreach (var balance in Model)
+    {
+        var cardClass = balance.LeaveType switch
+        {
+            HRMS.Models.Enums.LeaveType.CasualLeave => "balance-casual",
+            HRMS.Models.Enums.LeaveType.SickLeave => "balance-sick",
+            HRMS.Models.Enums.LeaveType.EarnedLeave => "balance-earned",
+            _ => ""
+        };
+        var icon = balance.LeaveType switch
+        {
+            HRMS.Models.Enums.LeaveType.CasualLeave => "bi-emoji-sunglasses",
+            HRMS.Models.Enums.LeaveType.SickLeave => "bi-heart-pulse",
+            HRMS.Models.Enums.LeaveType.EarnedLeave => "bi-award",
+            _ => "bi-calendar"
+        };
+
+        <div class="col-md-4">
+            <div class="card balance-card @cardClass">
+                <div class="balance-icon">
+                    <i class="bi @icon"></i>
+                </div>
+                <h5 class="fw-bold mb-3">@balance.LeaveTypeName</h5>
+
+                <div class="row text-center mb-3">
+                    <div class="col-4">
+                        <div class="fw-bold fs-4">@balance.TotalAllocated</div>
+                        <small>Allocated</small>
+                    </div>
+                    <div class="col-4">
+                        <div class="fw-bold fs-4">@balance.Used</div>
+                        <small>Used</small>
+                    </div>
+                    <div class="col-4">
+                        <div class="balance-value">@balance.Balance</div>
+                        <small class="fw-bold">Available</small>
+                    </div>
+                </div>
+
+                <div class="progress" style="height: 8px;">
+                    @{
+                        var percentage = balance.TotalAllocated > 0 ? (balance.Used * 100 / balance.TotalAllocated) : 0;
+                        var barColor = percentage > 75 ? "bg-danger" : percentage > 50 ? "bg-warning" : "bg-success";
+                    }
+                    <div class="progress-bar @barColor" style="width: @percentage%"></div>
+                </div>
+                <small class="text-muted mt-1">@percentage% consumed</small>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="mt-4">
+    <a asp-action="ApplyLeave" class="btn btn-primary">
+        <i class="bi bi-calendar-plus"></i> Apply for Leave
+    </a>
+    <a asp-action="Dashboard" class="btn btn-outline-secondary ms-2">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
+    </a>
+</div>

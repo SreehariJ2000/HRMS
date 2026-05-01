@@ -1,0 +1,185 @@
+@model HRMS.ViewModels.AdminDashboardVM
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="page-header d-flex justify-content-between align-items-center">
+    <div>
+        <h2><i class="bi bi-speedometer2"></i> Admin Dashboard</h2>
+        <p class="text-muted mb-0">Welcome back, @User.Identity?.Name</p>
+    </div>
+    <div>
+        <a asp-action="CreateEmployee" class="btn btn-primary">
+            <i class="bi bi-person-plus"></i> Add Employee
+        </a>
+    </div>
+</div>
+
+<!-- Stats Row -->
+<div class="row g-4 mb-4 fade-in">
+    <div class="col-md-3">
+        <div class="stat-card stat-primary">
+            <i class="bi bi-people stat-icon"></i>
+            <div class="stat-value">@Model.TotalEmployees</div>
+            <div class="stat-label">Total Employees</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card stat-accent">
+            <i class="bi bi-hourglass-split stat-icon"></i>
+            <div class="stat-value">@Model.PendingRequests</div>
+            <div class="stat-label">Pending Requests</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card stat-success">
+            <i class="bi bi-check-circle stat-icon"></i>
+            <div class="stat-value">@Model.ApprovedToday</div>
+            <div class="stat-label">Approved Today</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card stat-warning">
+            <i class="bi bi-x-circle stat-icon"></i>
+            <div class="stat-value">@Model.RejectedToday</div>
+            <div class="stat-label">Rejected Today</div>
+        </div>
+    </div>
+</div>
+
+<!-- Pending Leave Requests -->
+<div class="card fade-in">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-clipboard-check"></i> Pending Leave Requests</span>
+        <a asp-action="LeaveRequests" class="btn btn-sm btn-outline-primary">View All</a>
+    </div>
+    <div class="card-body p-0">
+        @if (Model.PendingLeaveRequests.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Employee</th>
+                            <th>Leave Type</th>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Days</th>
+                            <th>Applied On</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var request in Model.PendingLeaveRequests.Take(5))
+                        {
+                            <tr>
+                                <td>
+                                    <strong>@request.EmployeeName</strong><br />
+                                    <small class="text-muted">@request.EmployeeCode</small>
+                                </td>
+                                <td>
+                                    @switch (request.LeaveType)
+                                    {
+                                        case HRMS.Models.Enums.LeaveType.CasualLeave:
+                                            <span class="badge bg-info">Casual</span>
+                                            break;
+                                        case HRMS.Models.Enums.LeaveType.SickLeave:
+                                            <span class="badge bg-warning text-dark">Sick</span>
+                                            break;
+                                        case HRMS.Models.Enums.LeaveType.EarnedLeave:
+                                            <span class="badge bg-success">Earned</span>
+                                            break;
+                                    }
+                                </td>
+                                <td>@request.FromDate.ToString("dd MMM yyyy")</td>
+                                <td>@request.ToDate.ToString("dd MMM yyyy")</td>
+                                <td><span class="fw-bold">@request.RequestedDays</span></td>
+                                <td>@request.CreatedAt.ToString("dd MMM yyyy")</td>
+                                <td>
+                                    <button class="btn btn-sm btn-success me-1" data-bs-toggle="modal" data-bs-target="#approveModal-@request.Id">
+                                        <i class="bi bi-check-lg"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal-@request.Id">
+                                        <i class="bi bi-x-lg"></i>
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- Approve Modal -->
+                            <div class="modal fade" id="approveModal-@request.Id" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <form asp-action="ApproveLeave" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="leaveRequestId" value="@request.Id" />
+                                            <div class="modal-header bg-success bg-opacity-10">
+                                                <h5 class="modal-title text-success">
+                                                    <i class="bi bi-check-circle"></i> Approve Leave
+                                                </h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>Approve <strong>@request.EmployeeName</strong>'s leave request?</p>
+                                                <p class="text-muted">@request.FromDate.ToString("dd MMM") - @request.ToDate.ToString("dd MMM yyyy") (@request.RequestedDays days)</p>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Remarks (Optional)</label>
+                                                    <textarea name="adminRemarks" class="form-control" rows="2" placeholder="Add remarks..."></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="btn btn-success">
+                                                    <i class="bi bi-check-lg"></i> Approve
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Reject Modal -->
+                            <div class="modal fade" id="rejectModal-@request.Id" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <form asp-action="RejectLeave" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="leaveRequestId" value="@request.Id" />
+                                            <div class="modal-header bg-danger bg-opacity-10">
+                                                <h5 class="modal-title text-danger">
+                                                    <i class="bi bi-x-circle"></i> Reject Leave
+                                                </h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>Reject <strong>@request.EmployeeName</strong>'s leave request?</p>
+                                                <p class="text-muted">@request.FromDate.ToString("dd MMM") - @request.ToDate.ToString("dd MMM yyyy") (@request.RequestedDays days)</p>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Reason for Rejection (Optional)</label>
+                                                    <textarea name="adminRemarks" class="form-control" rows="2" placeholder="Add reason..."></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="btn btn-danger">
+                                                    <i class="bi bi-x-lg"></i> Reject
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <i class="bi bi-clipboard-check"></i>
+                <h5>No Pending Requests</h5>
+                <p>All leave requests have been processed.</p>
+            </div>
+        }
+    </div>
+</div>
