@@ -27,7 +27,7 @@ namespace HRMS.Repositories.Implementations
             return await _context.LeaveRequests
                 .AsNoTracking()
                 .Where(lr => lr.UserId == userId)
-                .OrderByDescending(lr => lr.CreatedAt)
+                .OrderByDescending(lr => lr.CreationTime)
                 .ToListAsync();
         }
 
@@ -37,7 +37,7 @@ namespace HRMS.Repositories.Implementations
                 .AsNoTracking()
                 .Include(lr => lr.User)
                 .Where(lr => lr.Status == LeaveStatus.Pending)
-                .OrderBy(lr => lr.CreatedAt)
+                .OrderBy(lr => lr.CreationTime)
                 .ToListAsync();
         }
 
@@ -46,7 +46,7 @@ namespace HRMS.Repositories.Implementations
             return await _context.LeaveRequests
                 .AsNoTracking()
                 .Include(lr => lr.User)
-                .OrderByDescending(lr => lr.CreatedAt)
+                .OrderByDescending(lr => lr.CreationTime)
                 .ToListAsync();
         }
 
@@ -59,7 +59,7 @@ namespace HRMS.Repositories.Implementations
         public async Task<int> GetCountByStatusAndDateAsync(LeaveStatus status, DateTime date)
         {
             return await _context.LeaveRequests
-                .CountAsync(lr => lr.Status == status && lr.CreatedAt.Date == date.Date);
+                .CountAsync(lr => lr.Status == status && lr.CreationTime.Date == date.Date);
         }
 
         public async Task AddAsync(LeaveRequest leaveRequest)

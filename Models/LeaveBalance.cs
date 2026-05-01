@@ -4,7 +4,8 @@ using HRMS.Models.Enums;
 
 namespace HRMS.Models
 {
-    public class LeaveBalance
+    [Table("LeaveBalance", Schema = "Master")]
+    public class LeaveBalance : AuditedEntity
     {
         [Key]
         public int Id { get; set; }
@@ -27,7 +28,6 @@ namespace HRMS.Models
         [NotMapped]
         public int Balance => TotalAllocated - Used;
 
-        // Navigation property
         [ForeignKey("UserId")]
         public User User { get; set; } = null!;
     }

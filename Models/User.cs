@@ -4,7 +4,8 @@ using HRMS.Models.Enums;
 
 namespace HRMS.Models
 {
-    public class User
+    [Table("User", Schema = "Administration")]
+    public class User : AuditedEntity
     {
         [Key]
         public int Id { get; set; }
@@ -14,8 +15,12 @@ namespace HRMS.Models
         public string EmployeeCode { get; set; } = string.Empty;
 
         [Required]
-        [MaxLength(100)]
-        public string Name { get; set; } = string.Empty;
+        [MaxLength(50)]
+        public string FirstName { get; set; } = string.Empty;
+
+        [Required]
+        [MaxLength(50)]
+        public string LastName { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(150)]
@@ -34,7 +39,6 @@ namespace HRMS.Models
         [Required]
         public UserRole Role { get; set; }
 
-        // Navigation properties
         public ICollection<LeaveBalance> LeaveBalances { get; set; } = new List<LeaveBalance>();
         public ICollection<LeaveRequest> LeaveRequests { get; set; } = new List<LeaveRequest>();
     }

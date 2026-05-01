@@ -20,7 +20,8 @@ namespace HRMS.Data
                 var admin = new User
                 {
                     EmployeeCode = "ADMIN001",
-                    Name = "System Administrator",
+                    FirstName = "System",
+                    LastName = "Administrator",
                     Email = "admin@hrms.com",
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin@123"),
                     Department = "Administration",

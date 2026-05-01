@@ -24,7 +24,8 @@ namespace HRMS.Services.Implementations
             {
                 Id = e.Id,
                 EmployeeCode = e.EmployeeCode,
-                Name = e.Name,
+                FirstName = e.FirstName,
+                LastName = e.LastName,
                 Email = e.Email,
                 Department = e.Department,
                 DateOfJoining = e.DateOfJoining
@@ -41,7 +42,8 @@ namespace HRMS.Services.Implementations
             {
                 Id = user.Id,
                 EmployeeCode = user.EmployeeCode,
-                Name = user.Name,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
                 Email = user.Email,
                 Department = user.Department,
                 DateOfJoining = user.DateOfJoining
@@ -63,7 +65,8 @@ namespace HRMS.Services.Implementations
             var user = new User
             {
                 EmployeeCode = model.EmployeeCode,
-                Name = model.Name,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
                 Email = model.Email,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password),
                 Department = model.Department,
@@ -93,7 +96,8 @@ namespace HRMS.Services.Implementations
                 return (false, "An employee with this code already exists.");
 
             user.EmployeeCode = model.EmployeeCode;
-            user.Name = model.Name;
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
             user.Email = model.Email;
             user.Department = model.Department;
             user.DateOfJoining = model.DateOfJoining;

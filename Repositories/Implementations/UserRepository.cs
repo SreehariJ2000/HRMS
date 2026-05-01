@@ -40,7 +40,8 @@ namespace HRMS.Repositories.Implementations
             return await _context.Users
                 .AsNoTracking()
                 .Where(u => u.Role == UserRole.Employee)
-                .OrderBy(u => u.Name)
+                .OrderBy(u => u.FirstName)
+                .ThenBy(u => u.LastName)
                 .ToListAsync();
         }
 

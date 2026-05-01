@@ -27,12 +27,20 @@
                             <span asp-validation-for="EmployeeCode" class="text-danger small"></span>
                         </div>
                         <div class="col-md-6">
-                            <label asp-for="Name" class="form-label"></label>
+                            <label asp-for="FirstName" class="form-label"></label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-person"></i></span>
-                                <input asp-for="Name" class="form-control" placeholder="Full name" />
+                                <input asp-for="FirstName" class="form-control" placeholder="First name" />
                             </div>
-                            <span asp-validation-for="Name" class="text-danger small"></span>
+                            <span asp-validation-for="FirstName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="LastName" class="form-label"></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                <input asp-for="LastName" class="form-control" placeholder="Last name" />
+                            </div>
+                            <span asp-validation-for="LastName" class="text-danger small"></span>
                         </div>
                         <div class="col-md-6">
                             <label asp-for="Email" class="form-label"></label>

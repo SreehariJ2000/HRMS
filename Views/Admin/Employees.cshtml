@@ -37,7 +37,7 @@
                             <tr>
                                 <td>@(sn++)</td>
                                 <td><span class="badge bg-secondary">@emp.EmployeeCode</span></td>
-                                <td><strong>@emp.Name</strong></td>
+                                <td><strong>@emp.FirstName @emp.LastName</strong></td>
                                 <td>@emp.Email</td>
                                 <td>@emp.Department</td>
                                 <td>@emp.DateOfJoining.ToString("dd MMM yyyy")</td>
@@ -62,7 +62,7 @@
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <p>Are you sure you want to delete <strong>@emp.Name</strong> (@emp.EmployeeCode)?</p>
+                                            <p>Are you sure you want to delete <strong>@emp.FirstName @emp.LastName</strong> (@emp.EmployeeCode)?</p>
                                             <p class="text-muted small">This action cannot be undone. All leave records for this employee will also be deleted.</p>
                                         </div>
                                         <div class="modal-footer">

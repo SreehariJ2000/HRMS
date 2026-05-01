@@ -35,7 +35,7 @@ namespace HRMS.Services.Implementations
 
             return new EmployeeDashboardVM
             {
-                EmployeeName = user.Name,
+                EmployeeName = $"{user.FirstName} {user.LastName}",
                 EmployeeCode = user.EmployeeCode,
                 Department = user.Department,
                 LeaveBalances = balances.Select(b => new LeaveBalanceVM
@@ -114,8 +114,7 @@ namespace HRMS.Services.Implementations
                 ToDate = model.ToDate,
                 RequestedDays = requestedDays,
                 Reason = model.Reason,
-                Status = LeaveStatus.Pending,
-                CreatedAt = DateTime.UtcNow
+                Status = LeaveStatus.Pending
             };
 
             await _leaveRequestRepository.AddAsync(leaveRequest);
@@ -206,7 +205,7 @@ namespace HRMS.Services.Implementations
                 Reason = lr.Reason,
                 Status = lr.Status,
                 AdminRemarks = lr.AdminRemarks,
-                CreatedAt = lr.CreatedAt
+                CreatedAt = lr.CreationTime
             };
         }
 
@@ -215,7 +214,7 @@ namespace HRMS.Services.Implementations
             var vm = MapToDetailVM(lr);
             if (lr.User != null)
             {
-                vm.EmployeeName = lr.User.Name;
+                vm.EmployeeName = $"{lr.User.FirstName} {lr.User.LastName}";
                 vm.EmployeeCode = lr.User.EmployeeCode;
                 vm.Department = lr.User.Department;
             }

@@ -4,7 +4,8 @@ using HRMS.Models.Enums;
 
 namespace HRMS.Models
 {
-    public class LeaveRequest
+    [Table("LeaveRequest", Schema = "Transaction")]
+    public class LeaveRequest : AuditedEntity
     {
         [Key]
         public int Id { get; set; }
@@ -26,18 +27,13 @@ namespace HRMS.Models
         [Required]
         public int RequestedDays { get; set; }
 
-        [MaxLength(500)]
         public string Reason { get; set; } = string.Empty;
 
         [Required]
         public LeaveStatus Status { get; set; } = LeaveStatus.Pending;
 
-        [MaxLength(500)]
         public string? AdminRemarks { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-        // Navigation property
         [ForeignKey("UserId")]
         public User User { get; set; } = null!;
     }
