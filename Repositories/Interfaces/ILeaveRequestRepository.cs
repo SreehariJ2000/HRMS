@@ -8,7 +8,10 @@ namespace HRMS.Repositories.Interfaces
         Task<LeaveRequest?> GetByIdAsync(int id);
         Task<List<LeaveRequest>> GetByUserIdAsync(int userId);
         Task<List<LeaveRequest>> GetPendingRequestsAsync();
+        IQueryable<LeaveRequest> GetPendingRequestsQueryable();
         Task<List<LeaveRequest>> GetAllRequestsAsync();
+        IQueryable<LeaveRequest> GetAllRequestsQueryable();
+        IQueryable<LeaveRequest> GetByUserIdQueryable(int userId);
         Task<int> GetCountByStatusAsync(LeaveStatus status);
         Task<int> GetCountByStatusAndDateAsync(LeaveStatus status, DateTime date);
         Task AddAsync(LeaveRequest leaveRequest);

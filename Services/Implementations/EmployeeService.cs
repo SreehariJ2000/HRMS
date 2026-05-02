@@ -32,6 +32,34 @@ namespace HRMS.Services.Implementations
             }).ToList();
         }
 
+        public async Task<HRMS.Helpers.PaginatedList<EmployeeVM>> GetPaginatedEmployeesAsync(string? searchString, int pageNumber, int pageSize)
+        {
+            var query = _userRepository.GetEmployeesQueryable();
+
+            if (!string.IsNullOrWhiteSpace(searchString))
+            {
+                searchString = searchString.ToLower();
+                query = query.Where(e => 
+                    e.FirstName.ToLower().Contains(searchString) || 
+                    e.LastName.ToLower().Contains(searchString) || 
+                    e.EmployeeCode.ToLower().Contains(searchString) ||
+                    e.Email.ToLower().Contains(searchString) ||
+                    e.Department.ToLower().Contains(searchString));
+            }
+
+            var vmQuery = query.Select(e => new EmployeeVM
+            {
+                Id = e.Id,
+                EmployeeCode = e.EmployeeCode,
+                FirstName = e.FirstName,
+                LastName = e.LastName,
+                Email = e.Email,
+                Department = e.Department,
+                DateOfJoining = e.DateOfJoining
+            });
+
+            return await HRMS.Helpers.PaginatedList<EmployeeVM>.CreateAsync(vmQuery, pageNumber, pageSize);
+        }
         public async Task<EmployeeVM?> GetEmployeeByIdAsync(int id)
         {
             var user = await _userRepository.GetByIdAsync(id);

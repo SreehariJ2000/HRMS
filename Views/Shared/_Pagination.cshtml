@@ -1,0 +1,36 @@
+@model dynamic
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<nav aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+        <li class="page-item @prevDisabled">
+            <a class="page-link" asp-action="@ViewContext.RouteData.Values["action"]"
+               asp-route-pageNumber="@(Model.PageIndex - 1)"
+               asp-route-searchString="@ViewData["CurrentFilter"]">
+                Previous
+            </a>
+        </li>
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            var activeClass = i == Model.PageIndex ? "active" : "";
+            <li class="page-item @activeClass">
+                <a class="page-link" asp-action="@ViewContext.RouteData.Values["action"]"
+                   asp-route-pageNumber="@i"
+                   asp-route-searchString="@ViewData["CurrentFilter"]">
+                    @i
+                </a>
+            </li>
+        }
+        <li class="page-item @nextDisabled">
+            <a class="page-link" asp-action="@ViewContext.RouteData.Values["action"]"
+               asp-route-pageNumber="@(Model.PageIndex + 1)"
+               asp-route-searchString="@ViewData["CurrentFilter"]">
+                Next
+            </a>
+        </li>
+    </ul>
+</nav>

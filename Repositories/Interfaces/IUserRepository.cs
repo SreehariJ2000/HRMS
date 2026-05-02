@@ -8,6 +8,7 @@ namespace HRMS.Repositories.Interfaces
         Task<User?> GetByEmailAsync(string email);
         Task<User?> GetByEmployeeCodeAsync(string employeeCode);
         Task<List<User>> GetAllEmployeesAsync();
+        IQueryable<User> GetEmployeesQueryable();
         Task<int> GetEmployeeCountAsync();
         Task AddAsync(User user);
         Task UpdateAsync(User user);

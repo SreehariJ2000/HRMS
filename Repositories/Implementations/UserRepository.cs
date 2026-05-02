@@ -45,6 +45,15 @@ namespace HRMS.Repositories.Implementations
                 .ToListAsync();
         }
 
+        public IQueryable<User> GetEmployeesQueryable()
+        {
+            return _context.Users
+                .AsNoTracking()
+                .Where(u => u.Role == UserRole.Employee)
+                .OrderBy(u => u.FirstName)
+                .ThenBy(u => u.LastName);
+        }
+
         public async Task<int> GetEmployeeCountAsync()
         {
             return await _context.Users

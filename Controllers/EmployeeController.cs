@@ -63,9 +63,11 @@ namespace HRMS.Controllers
             return Redirect(Request.Headers["Referer"].ToString() ?? "/Employee/Dashboard");
         }
 
-        public async Task<IActionResult> LeaveHistory()
+        public async Task<IActionResult> LeaveHistory(string searchString, int? pageNumber)
         {
-            var history = await _leaveService.GetLeaveHistoryAsync();
+            ViewData["CurrentFilter"] = searchString;
+            int pageSize = 10;
+            var history = await _leaveService.GetPaginatedLeaveHistoryAsync(searchString, pageNumber ?? 1, pageSize);
             return View(history);
         }
 

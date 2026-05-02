@@ -33,21 +33,38 @@ namespace HRMS.Repositories.Implementations
 
         public async Task<List<LeaveRequest>> GetPendingRequestsAsync()
         {
-            return await _context.LeaveRequests
+            return await GetPendingRequestsQueryable().ToListAsync();
+        }
+
+        public IQueryable<LeaveRequest> GetPendingRequestsQueryable()
+        {
+            return _context.LeaveRequests
                 .AsNoTracking()
                 .Include(lr => lr.User)
                 .Where(lr => lr.Status == LeaveStatus.Pending)
-                .OrderBy(lr => lr.CreationTime)
-                .ToListAsync();
+                .OrderBy(lr => lr.CreationTime);
         }
 
         public async Task<List<LeaveRequest>> GetAllRequestsAsync()
         {
-            return await _context.LeaveRequests
+            return await GetAllRequestsQueryable().ToListAsync();
+        }
+
+        public IQueryable<LeaveRequest> GetAllRequestsQueryable()
+        {
+            return _context.LeaveRequests
                 .AsNoTracking()
                 .Include(lr => lr.User)
-                .OrderByDescending(lr => lr.CreationTime)
-                .ToListAsync();
+                .OrderByDescending(lr => lr.CreationTime);
+        }
+
+        public IQueryable<LeaveRequest> GetByUserIdQueryable(int userId)
+        {
+            return _context.LeaveRequests
+                .AsNoTracking()
+                .Include(lr => lr.User)
+                .Where(lr => lr.UserId == userId)
+                .OrderByDescending(lr => lr.CreationTime);
         }
 
         public async Task<int> GetCountByStatusAsync(LeaveStatus status)

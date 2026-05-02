@@ -136,6 +136,65 @@
                 var modal = new bootstrap.Modal(modalEl);
                 modal.show();
             }
+
+            // AJAX Search and Pagination
+            var searchForms = document.querySelectorAll('form[action*="Employees"], form[action*="LeaveRequests"], form[action*="LeaveHistory"]');
+            searchForms.forEach(function(form) {
+                var input = form.querySelector('input[name="searchString"]');
+                if (!input) return;
+
+                var timeout = null;
+                input.addEventListener('input', function() {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(function() {
+                        var url = new URL(window.location.href);
+                        url.searchParams.set('searchString', input.value);
+                        url.searchParams.delete('pageNumber'); // Reset to page 1
+                        fetchAndUpdateTable(url.toString());
+                    }, 300); // 300ms debounce
+                });
+
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    var url = new URL(window.location.href);
+                    url.searchParams.set('searchString', input.value);
+                    url.searchParams.delete('pageNumber');
+                    fetchAndUpdateTable(url.toString());
+                });
+            });
+
+            document.body.addEventListener('click', function(e) {
+                if (e.target.matches('.pagination .page-link')) {
+                    e.preventDefault();
+                    fetchAndUpdateTable(e.target.href);
+                }
+            });
+
+            function fetchAndUpdateTable(url) {
+                var card = document.querySelector('.card.fade-in');
+                if (!card) return;
+                
+                card.style.opacity = '0.5'; // Visual feedback
+                
+                fetch(url)
+                    .then(response => response.text())
+                    .then(html => {
+                        var parser = new DOMParser();
+                        var doc = parser.parseFromString(html, 'text/html');
+                        var newCard = doc.querySelector('.card.fade-in');
+                        
+                        if (newCard) {
+                            card.innerHTML = newCard.innerHTML;
+                        }
+                        card.style.opacity = '1';
+                        
+                        // Update URL without page reload
+                        window.history.replaceState({}, '', url);
+                    })
+                    .catch(() => {
+                        window.location.href = url; // Fallback
+                    });
+            }
         });
     </script>
     @await RenderSectionAsync("Scripts", required: false)

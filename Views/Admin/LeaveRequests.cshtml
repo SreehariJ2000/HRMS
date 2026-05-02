@@ -1,11 +1,23 @@
-@model List<HRMS.ViewModels.LeaveRequestDetailVM>
+@model HRMS.Helpers.PaginatedList<HRMS.ViewModels.LeaveRequestDetailVM>
 @{
     ViewData["Title"] = "Leave Requests";
 }
 
-<div class="page-header">
-    <h2><i class="bi bi-clipboard-check"></i> Leave Requests</h2>
-    <p class="text-muted mb-0">Review and manage pending leave applications</p>
+<div class="page-header d-flex justify-content-between align-items-center flex-wrap">
+    <div>
+        <h2><i class="bi bi-clipboard-check"></i> Leave Requests</h2>
+        <p class="text-muted mb-0">Review and manage pending leave applications</p>
+    </div>
+    <div class="mt-2 mt-md-0">
+        <form asp-action="LeaveRequests" method="get" class="d-flex">
+            <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control me-2" placeholder="Search requests..." />
+            <button type="submit" class="btn btn-outline-secondary">Search</button>
+            @if (!string.IsNullOrEmpty(ViewData["CurrentFilter"]?.ToString()))
+            {
+                <a asp-action="LeaveRequests" class="btn btn-outline-danger ms-1">Clear</a>
+            }
+        </form>
+    </div>
 </div>
 
 <div class="card fade-in">
@@ -73,6 +85,8 @@
                     </tbody>
                 </table>
             </div>
+
+            <partial name="_Pagination" model="Model" />
 
         }
         else

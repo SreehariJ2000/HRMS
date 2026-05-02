@@ -22,9 +22,11 @@ namespace HRMS.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> Employees()
+        public async Task<IActionResult> Employees(string searchString, int? pageNumber)
         {
-            var employees = await _employeeService.GetAllEmployeesAsync();
+            ViewData["CurrentFilter"] = searchString;
+            int pageSize = 10;
+            var employees = await _employeeService.GetPaginatedEmployeesAsync(searchString, pageNumber ?? 1, pageSize);
             return View(employees);
         }
 
@@ -98,9 +100,11 @@ namespace HRMS.Controllers
             return RedirectToAction("Employees");
         }
 
-        public async Task<IActionResult> LeaveRequests()
+        public async Task<IActionResult> LeaveRequests(string searchString, int? pageNumber)
         {
-            var requests = await _leaveService.GetAllPendingRequestsAsync();
+            ViewData["CurrentFilter"] = searchString;
+            int pageSize = 10;
+            var requests = await _leaveService.GetPaginatedPendingRequestsAsync(searchString, pageNumber ?? 1, pageSize);
             return View(requests);
         }
 
@@ -130,9 +134,11 @@ namespace HRMS.Controllers
             return RedirectToAction("LeaveRequests");
         }
 
-        public async Task<IActionResult> LeaveHistory()
+        public async Task<IActionResult> LeaveHistory(string searchString, int? pageNumber)
         {
-            var history = await _leaveService.GetAdminLeaveHistoryAsync();
+            ViewData["CurrentFilter"] = searchString;
+            int pageSize = 10;
+            var history = await _leaveService.GetPaginatedAdminLeaveHistoryAsync(searchString, pageNumber ?? 1, pageSize);
             return View(history);
         }
     }

@@ -209,6 +209,35 @@ namespace HRMS.Services.Implementations
             return requests.Select(MapToDetailVM).ToList();
         }
 
+        public async Task<HRMS.Helpers.PaginatedList<LeaveRequestDetailVM>> GetPaginatedLeaveHistoryAsync(string? searchString, int pageNumber, int pageSize)
+        {
+            var userId = _applicationUserService.GetUserId() ?? throw new UnauthorizedAccessException("User not found.");
+            var query = _leaveRequestRepository.GetByUserIdQueryable(userId);
+
+            if (!string.IsNullOrWhiteSpace(searchString))
+            {
+                searchString = searchString.ToLower();
+                query = query.Where(r => r.Reason.ToLower().Contains(searchString) || 
+                                         r.LeaveType.ToString().ToLower().Contains(searchString));
+            }
+
+            var vmQuery = query.Select(lr => new LeaveRequestDetailVM
+            {
+                Id = lr.Id,
+                UserId = lr.UserId,
+                LeaveType = lr.LeaveType,
+                FromDate = lr.FromDate,
+                ToDate = lr.ToDate,
+                RequestedDays = lr.RequestedDays,
+                Reason = lr.Reason,
+                Status = lr.Status,
+                AdminRemarks = lr.AdminRemarks,
+                CreatedAt = lr.CreationTime
+            });
+
+            return await HRMS.Helpers.PaginatedList<LeaveRequestDetailVM>.CreateAsync(vmQuery, pageNumber, pageSize);
+        }
+
         public async Task<List<LeaveRequestDetailVM>> GetAdminLeaveHistoryAsync()
         {
             var requests = await _leaveRequestRepository.GetAllRequestsAsync();
@@ -217,10 +246,78 @@ namespace HRMS.Services.Implementations
                            .ToList();
         }
 
+        public async Task<HRMS.Helpers.PaginatedList<LeaveRequestDetailVM>> GetPaginatedAdminLeaveHistoryAsync(string? searchString, int pageNumber, int pageSize)
+        {
+            var query = _leaveRequestRepository.GetAllRequestsQueryable().Where(r => r.Status != LeaveStatus.Pending);
+
+            if (!string.IsNullOrWhiteSpace(searchString))
+            {
+                searchString = searchString.ToLower();
+                query = query.Where(r => 
+                    r.User.FirstName.ToLower().Contains(searchString) ||
+                    r.User.LastName.ToLower().Contains(searchString) ||
+                    r.User.EmployeeCode.ToLower().Contains(searchString) ||
+                    r.Reason.ToLower().Contains(searchString));
+            }
+
+            var vmQuery = query.Select(lr => new LeaveRequestDetailVM
+            {
+                Id = lr.Id,
+                UserId = lr.UserId,
+                LeaveType = lr.LeaveType,
+                FromDate = lr.FromDate,
+                ToDate = lr.ToDate,
+                RequestedDays = lr.RequestedDays,
+                Reason = lr.Reason,
+                Status = lr.Status,
+                AdminRemarks = lr.AdminRemarks,
+                CreatedAt = lr.CreationTime,
+                EmployeeName = lr.User.FirstName + " " + lr.User.LastName,
+                EmployeeCode = lr.User.EmployeeCode,
+                Department = lr.User.Department
+            });
+
+            return await HRMS.Helpers.PaginatedList<LeaveRequestDetailVM>.CreateAsync(vmQuery, pageNumber, pageSize);
+        }
+
         public async Task<List<LeaveRequestDetailVM>> GetAllPendingRequestsAsync()
         {
             var requests = await _leaveRequestRepository.GetPendingRequestsAsync();
             return requests.Select(MapToDetailVMWithUser).ToList();
+        }
+
+        public async Task<HRMS.Helpers.PaginatedList<LeaveRequestDetailVM>> GetPaginatedPendingRequestsAsync(string? searchString, int pageNumber, int pageSize)
+        {
+            var query = _leaveRequestRepository.GetPendingRequestsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(searchString))
+            {
+                searchString = searchString.ToLower();
+                query = query.Where(r => 
+                    r.User.FirstName.ToLower().Contains(searchString) ||
+                    r.User.LastName.ToLower().Contains(searchString) ||
+                    r.User.EmployeeCode.ToLower().Contains(searchString) ||
+                    r.Reason.ToLower().Contains(searchString));
+            }
+
+            var vmQuery = query.Select(lr => new LeaveRequestDetailVM
+            {
+                Id = lr.Id,
+                UserId = lr.UserId,
+                LeaveType = lr.LeaveType,
+                FromDate = lr.FromDate,
+                ToDate = lr.ToDate,
+                RequestedDays = lr.RequestedDays,
+                Reason = lr.Reason,
+                Status = lr.Status,
+                AdminRemarks = lr.AdminRemarks,
+                CreatedAt = lr.CreationTime,
+                EmployeeName = lr.User.FirstName + " " + lr.User.LastName,
+                EmployeeCode = lr.User.EmployeeCode,
+                Department = lr.User.Department
+            });
+
+            return await HRMS.Helpers.PaginatedList<LeaveRequestDetailVM>.CreateAsync(vmQuery, pageNumber, pageSize);
         }
 
         public async Task<List<LeaveBalanceVM>> GetLeaveBalancesAsync()
