@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace HRMS.Data.Migrations
+namespace HRMS.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
@@ -50,11 +50,11 @@ namespace HRMS.Data.Migrations
                     b.Property<int?>("ModifiedUserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TotalAllocated")
-                        .HasColumnType("int");
+                    b.Property<decimal>("TotalAllocated")
+                        .HasColumnType("decimal(5,1)");
 
-                    b.Property<int>("Used")
-                        .HasColumnType("int");
+                    b.Property<decimal>("Used")
+                        .HasColumnType("decimal(5,1)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -93,6 +93,9 @@ namespace HRMS.Data.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsHalfDay")
+                        .HasColumnType("bit");
+
                     b.Property<string>("LeaveType")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -108,8 +111,8 @@ namespace HRMS.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RequestedDays")
-                        .HasColumnType("int");
+                    b.Property<decimal>("RequestedDays")
+                        .HasColumnType("decimal(5,1)");
 
                     b.Property<string>("Status")
                         .IsRequired()

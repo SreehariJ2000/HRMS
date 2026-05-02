@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace HRMS.Data.Migrations
+namespace HRMS.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateModelsWithAuditedEntityAndNames : Migration
+    public partial class InitialTableStructure : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -56,8 +56,8 @@ namespace HRMS.Data.Migrations
                     UserId = table.Column<int>(type: "int", nullable: false),
                     LeaveType = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Year = table.Column<int>(type: "int", nullable: false),
-                    TotalAllocated = table.Column<int>(type: "int", nullable: false),
-                    Used = table.Column<int>(type: "int", nullable: false),
+                    TotalAllocated = table.Column<decimal>(type: "decimal(5,1)", nullable: false),
+                    Used = table.Column<decimal>(type: "decimal(5,1)", nullable: false),
                     CreatedUserId = table.Column<int>(type: "int", nullable: true),
                     CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
@@ -87,7 +87,8 @@ namespace HRMS.Data.Migrations
                     LeaveType = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     FromDate = table.Column<DateTime>(type: "date", nullable: false),
                     ToDate = table.Column<DateTime>(type: "date", nullable: false),
-                    RequestedDays = table.Column<int>(type: "int", nullable: false),
+                    RequestedDays = table.Column<decimal>(type: "decimal(5,1)", nullable: false),
+                    IsHalfDay = table.Column<bool>(type: "bit", nullable: false),
                     Reason = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     AdminRemarks = table.Column<string>(type: "nvarchar(max)", nullable: true),

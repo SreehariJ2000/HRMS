@@ -50,6 +50,16 @@
                         </div>
                     </div>
 
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input asp-for="IsHalfDay" class="form-check-input" type="checkbox" role="switch" id="halfDaySwitch" />
+                            <label class="form-check-label" for="halfDaySwitch">
+                                <i class="bi bi-clock-history"></i> Half Day Leave
+                                <small class="text-muted">(applies only for single-day leave)</small>
+                            </label>
+                        </div>
+                    </div>
+
                     <div class="alert alert-info py-2 d-none" id="dayCount">
                         <i class="bi bi-info-circle"></i> Estimated working days: <strong id="dayCountValue">0</strong>
                         <small class="text-muted">(excludes weekends)</small>
@@ -85,6 +95,7 @@
         function calculateBusinessDays() {
             var fromDate = document.getElementById('fromDate').value;
             var toDate = document.getElementById('toDate').value;
+            var isHalfDay = document.getElementById('halfDaySwitch').checked;
 
             if (fromDate && toDate) {
                 var start = new Date(fromDate);
@@ -99,7 +110,11 @@
                         current.setDate(current.getDate() + 1);
                     }
 
-                    document.getElementById('dayCountValue').textContent = days;
+                    if (isHalfDay) {
+                        document.getElementById('dayCountValue').textContent = '0.5 (Half Day)';
+                    } else {
+                        document.getElementById('dayCountValue').textContent = days;
+                    }
                     document.getElementById('dayCount').classList.remove('d-none');
                 } else {
                     document.getElementById('dayCount').classList.add('d-none');
@@ -111,5 +126,15 @@
 
         document.getElementById('fromDate').addEventListener('change', calculateBusinessDays);
         document.getElementById('toDate').addEventListener('change', calculateBusinessDays);
+        document.getElementById('halfDaySwitch').addEventListener('change', function() {
+            if (this.checked) {
+                // When half day is enabled, set ToDate = FromDate
+                var fromDate = document.getElementById('fromDate').value;
+                if (fromDate) {
+                    document.getElementById('toDate').value = fromDate;
+                }
+            }
+            calculateBusinessDays();
+        });
     </script>
 }

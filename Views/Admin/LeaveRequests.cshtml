@@ -64,7 +64,15 @@
                                 </td>
                                 <td>@request.FromDate.ToString("dd MMM yyyy")</td>
                                 <td>@request.ToDate.ToString("dd MMM yyyy")</td>
-                                <td><span class="fw-bold">@request.RequestedDays</span></td>
+                                <td>
+                                    <span class="fw-bold">
+                                        @(request.IsHalfDay ? "0.5" : request.RequestedDaysDecimal.ToString("0.#"))
+                                    </span>
+                                    @if (request.IsHalfDay)
+                                    {
+                                        <span class="badge bg-info ms-1">Half Day</span>
+                                    }
+                                </td>
                                 <td>
                                     <span title="@request.Reason">
                                         @(request.Reason.Length > 30 ? request.Reason.Substring(0, 30) + "..." : request.Reason)

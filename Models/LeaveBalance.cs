@@ -20,13 +20,15 @@ namespace HRMS.Models
         public int Year { get; set; }
 
         [Required]
-        public int TotalAllocated { get; set; }
+        [Column(TypeName = "decimal(5,1)")]
+        public decimal TotalAllocated { get; set; }
 
         [Required]
-        public int Used { get; set; }
+        [Column(TypeName = "decimal(5,1)")]
+        public decimal Used { get; set; }
 
         [NotMapped]
-        public int Balance => TotalAllocated - Used;
+        public decimal Balance => TotalAllocated - Used;
 
         [ForeignKey("UserId")]
         public User User { get; set; } = null!;

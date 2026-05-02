@@ -25,7 +25,10 @@ namespace HRMS.Models
         public DateTime ToDate { get; set; }
 
         [Required]
-        public int RequestedDays { get; set; }
+        [Column(TypeName = "decimal(5,1)")]
+        public decimal RequestedDays { get; set; }
+
+        public bool IsHalfDay { get; set; } = false;
 
         public string Reason { get; set; } = string.Empty;
 

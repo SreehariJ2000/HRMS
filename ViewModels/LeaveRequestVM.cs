@@ -25,5 +25,8 @@ namespace HRMS.ViewModels
         [StringLength(500, MinimumLength = 1, ErrorMessage = "Reason must be between 1 and 1000 characters")]
         [Display(Name = "Reason")]
         public string Reason { get; set; } = string.Empty;
+
+        [Display(Name = "Half Day Leave")]
+        public bool IsHalfDay { get; set; } = false;
     }
 }

@@ -6,8 +6,8 @@ namespace HRMS.ViewModels
     {
         public LeaveType LeaveType { get; set; }
         public string LeaveTypeName { get; set; } = string.Empty;
-        public int TotalAllocated { get; set; }
-        public int Used { get; set; }
-        public int Balance { get; set; }
+        public decimal TotalAllocated { get; set; }
+        public decimal Used { get; set; }
+        public decimal Balance { get; set; }
     }
 }

@@ -79,9 +79,15 @@ namespace HRMS.Services.Implementations
             if (model.FromDate.Date < user.DateOfJoining.Date)
                 return (false, "Cannot apply for leave before your Date of Joining.");
 
-            int requestedDays = DateHelper.CalculateBusinessDays(model.FromDate, model.ToDate);
-            if (requestedDays <= 0)
+            // Half day validation
+            if (model.IsHalfDay && model.FromDate.Date != model.ToDate.Date)
+                return (false, "Half day leave can only be applied for a single day.");
+
+            int businessDays = DateHelper.CalculateBusinessDays(model.FromDate, model.ToDate);
+            if (businessDays <= 0)
                 return (false, "The selected date range contains only weekends. Please select valid working days.");
+
+            decimal requestedDays = model.IsHalfDay ? 0.5m : businessDays;
 
             bool hasOverlap = await _leaveRequestRepository.HasOverlappingRequestAsync(userId, model.FromDate, model.ToDate);
             if (hasOverlap)
@@ -121,12 +127,14 @@ namespace HRMS.Services.Implementations
                 FromDate = model.FromDate,
                 ToDate = model.ToDate,
                 RequestedDays = requestedDays,
+                IsHalfDay = model.IsHalfDay,
                 Reason = model.Reason,
                 Status = LeaveStatus.Pending
             };
 
             await _leaveRequestRepository.AddAsync(leaveRequest);
-            return (true, $"Leave application submitted successfully for {requestedDays} working day(s).");
+            var dayLabel = model.IsHalfDay ? "half day" : $"{requestedDays} working day(s)";
+            return (true, $"Leave application submitted successfully for {dayLabel}.");
         }
 
         public async Task<(bool Success, string Message)> ApproveLeaveAsync(int leaveRequestId, string? adminRemarks)
@@ -228,7 +236,8 @@ namespace HRMS.Services.Implementations
                 LeaveType = lr.LeaveType,
                 FromDate = lr.FromDate,
                 ToDate = lr.ToDate,
-                RequestedDays = lr.RequestedDays,
+                RequestedDaysDecimal = lr.RequestedDays,
+                IsHalfDay = lr.IsHalfDay,
                 Reason = lr.Reason,
                 Status = lr.Status,
                 AdminRemarks = lr.AdminRemarks,
@@ -267,7 +276,8 @@ namespace HRMS.Services.Implementations
                 LeaveType = lr.LeaveType,
                 FromDate = lr.FromDate,
                 ToDate = lr.ToDate,
-                RequestedDays = lr.RequestedDays,
+                RequestedDaysDecimal = lr.RequestedDays,
+                IsHalfDay = lr.IsHalfDay,
                 Reason = lr.Reason,
                 Status = lr.Status,
                 AdminRemarks = lr.AdminRemarks,
@@ -307,7 +317,8 @@ namespace HRMS.Services.Implementations
                 LeaveType = lr.LeaveType,
                 FromDate = lr.FromDate,
                 ToDate = lr.ToDate,
-                RequestedDays = lr.RequestedDays,
+                RequestedDaysDecimal = lr.RequestedDays,
+                IsHalfDay = lr.IsHalfDay,
                 Reason = lr.Reason,
                 Status = lr.Status,
                 AdminRemarks = lr.AdminRemarks,
@@ -343,7 +354,9 @@ namespace HRMS.Services.Implementations
                 LeaveType = lr.LeaveType,
                 FromDate = lr.FromDate,
                 ToDate = lr.ToDate,
-                RequestedDays = lr.RequestedDays,
+                RequestedDays = (int)Math.Ceiling(lr.RequestedDays),
+                RequestedDaysDecimal = lr.RequestedDays,
+                IsHalfDay = lr.IsHalfDay,
                 Reason = lr.Reason,
                 Status = lr.Status,
                 AdminRemarks = lr.AdminRemarks,
