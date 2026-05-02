@@ -44,7 +44,7 @@ namespace HRMS.Controllers
             var (success, message) = await _employeeService.CreateEmployeeAsync(model);
             if (!success)
             {
-                ModelState.AddModelError(string.Empty, message);
+                TempData["ErrorMessage"] = message;
                 return View(model);
             }
 
@@ -74,7 +74,7 @@ namespace HRMS.Controllers
             var (success, message) = await _employeeService.UpdateEmployeeAsync(model);
             if (!success)
             {
-                ModelState.AddModelError(string.Empty, message);
+                TempData["ErrorMessage"] = message;
                 return View(model);
             }
 

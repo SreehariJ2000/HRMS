@@ -99,8 +99,19 @@ namespace HRMS.Services.Implementations
             if (leaveBalance == null)
                 return (false, "Leave balance record not found. Please contact administrator.");
 
-            if (requestedDays > leaveBalance.Balance)
-                return (false, $"Insufficient leave balance. Available: {leaveBalance.Balance} days, Requested: {requestedDays} days.");
+            // Calculate pending days for this leave type in the current year
+            var userRequests = await _leaveRequestRepository.GetByUserIdAsync(userId);
+            var pendingDays = userRequests
+                .Where(r => r.LeaveType == model.LeaveType && 
+                            r.Status == LeaveStatus.Pending && 
+                            r.FromDate.Year == currentYear)
+                .Sum(r => r.RequestedDays);
+
+            if (requestedDays + pendingDays > leaveBalance.Balance)
+            {
+                var effectiveBalance = leaveBalance.Balance - pendingDays;
+                return (false, $"Insufficient leave balance. You have {leaveBalance.Balance} days available, but {pendingDays} days are currently pending approval. You can only apply for {Math.Max(0, effectiveBalance)} more day(s).");
+            }
 
 
             var leaveRequest = new LeaveRequest
@@ -158,6 +169,37 @@ namespace HRMS.Services.Implementations
             await _leaveRequestRepository.UpdateAsync(request);
 
             return (true, "Leave request rejected.");
+        }
+
+        public async Task<(bool Success, string Message)> CancelLeaveAsync(int leaveRequestId)
+        {
+            var userId = _applicationUserService.GetUserId() ?? throw new UnauthorizedAccessException("User not found.");
+            var request = await _leaveRequestRepository.GetByIdAsync(leaveRequestId);
+            
+            if (request == null)
+                return (false, "Leave request not found.");
+
+            if (request.UserId != userId)
+                return (false, "You can only cancel your own leave requests.");
+
+            if (request.Status == LeaveStatus.Rejected)
+                return (false, "Rejected leave requests cannot be cancelled.");
+
+            if (request.Status == LeaveStatus.Approved)
+            {
+                // Restore leave balance
+                var leaveBalance = await _leaveBalanceRepository.GetAsync(request.UserId, request.LeaveType, request.FromDate.Year);
+                if (leaveBalance != null)
+                {
+                    leaveBalance.Used -= request.RequestedDays;
+                    if (leaveBalance.Used < 0) leaveBalance.Used = 0;
+                    await _leaveBalanceRepository.UpdateAsync(leaveBalance);
+                }
+            }
+
+            await _leaveRequestRepository.DeleteAsync(request);
+
+            return (true, "Leave request cancelled successfully.");
         }
 
         public async Task<List<LeaveRequestDetailVM>> GetLeaveHistoryAsync()

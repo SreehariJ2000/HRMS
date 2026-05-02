@@ -39,12 +39,28 @@ namespace HRMS.Controllers
 
             if (!success)
             {
-                ModelState.AddModelError(string.Empty, message);
+                TempData["ErrorMessage"] = message;
                 return View(model);
             }
 
             TempData["SuccessMessage"] = message;
             return RedirectToAction("Dashboard");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CancelLeave(int id)
+        {
+            var (success, message) = await _leaveService.CancelLeaveAsync(id);
+            if (success)
+            {
+                TempData["SuccessMessage"] = message;
+            }
+            else
+            {
+                TempData["ErrorMessage"] = message;
+            }
+            return Redirect(Request.Headers["Referer"].ToString() ?? "/Employee/Dashboard");
         }
 
         public async Task<IActionResult> LeaveHistory()

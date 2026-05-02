@@ -74,6 +74,12 @@ namespace HRMS.Repositories.Implementations
             await _context.SaveChangesAsync();
         }
 
+        public async Task DeleteAsync(LeaveRequest leaveRequest)
+        {
+            _context.LeaveRequests.Remove(leaveRequest);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<bool> HasOverlappingRequestAsync(int userId, DateTime fromDate, DateTime toDate, int? excludeRequestId = null)
         {
             return await _context.LeaveRequests

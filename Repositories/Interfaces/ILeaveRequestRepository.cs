@@ -13,6 +13,7 @@ namespace HRMS.Repositories.Interfaces
         Task<int> GetCountByStatusAndDateAsync(LeaveStatus status, DateTime date);
         Task AddAsync(LeaveRequest leaveRequest);
         Task UpdateAsync(LeaveRequest leaveRequest);
+        Task DeleteAsync(LeaveRequest leaveRequest);
         Task<bool> HasOverlappingRequestAsync(int userId, DateTime fromDate, DateTime toDate, int? excludeRequestId = null);
     }
 }
