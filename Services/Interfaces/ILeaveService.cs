@@ -10,6 +10,7 @@ namespace HRMS.Services.Interfaces
         Task<(bool Success, string Message)> ApproveLeaveAsync(int leaveRequestId, string? adminRemarks);
         Task<(bool Success, string Message)> RejectLeaveAsync(int leaveRequestId, string? adminRemarks);
         Task<List<LeaveRequestDetailVM>> GetLeaveHistoryAsync();
+        Task<List<LeaveRequestDetailVM>> GetAdminLeaveHistoryAsync();
         Task<List<LeaveRequestDetailVM>> GetAllPendingRequestsAsync();
         Task<List<LeaveBalanceVM>> GetLeaveBalancesAsync();
     }

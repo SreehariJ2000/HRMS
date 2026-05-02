@@ -51,37 +51,11 @@
                                 </td>
                             </tr>
 
-                            <!-- Delete Modal -->
-                            <div class="modal fade" id="deleteModal-@emp.Id" tabindex="-1">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header bg-danger bg-opacity-10">
-                                            <h5 class="modal-title text-danger">
-                                                <i class="bi bi-exclamation-triangle"></i> Confirm Delete
-                                            </h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p>Are you sure you want to delete <strong>@emp.FirstName @emp.LastName</strong> (@emp.EmployeeCode)?</p>
-                                            <p class="text-muted small">This action cannot be undone. All leave records for this employee will also be deleted.</p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                            <form asp-action="DeleteEmployee" method="post" style="display:inline;">
-                                                @Html.AntiForgeryToken()
-                                                <input type="hidden" name="id" value="@emp.Id" />
-                                                <button type="submit" class="btn btn-danger">
-                                                    <i class="bi bi-trash"></i> Delete
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         }
                     </tbody>
                 </table>
             </div>
+
         }
         else
         {
@@ -96,3 +70,38 @@
         }
     </div>
 </div>
+
+<!-- Modals placed completely outside all containers to avoid z-index and overflow clipping -->
+@if (Model.Any())
+{
+    @foreach (var emp in Model)
+    {
+        <!-- Delete Modal -->
+        <div class="modal fade" id="deleteModal-@emp.Id" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger bg-opacity-10">
+                        <h5 class="modal-title text-danger">
+                            <i class="bi bi-exclamation-triangle"></i> Confirm Delete
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to delete <strong>@emp.FirstName @emp.LastName</strong> (@emp.EmployeeCode)?</p>
+                        <p class="text-muted small">This action cannot be undone. All leave records for this employee will also be deleted.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <form asp-action="DeleteEmployee" method="post" style="display:inline;">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@emp.Id" />
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash"></i> Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}

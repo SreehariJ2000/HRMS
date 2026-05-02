@@ -47,7 +47,6 @@ namespace HRMS.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // User configuration
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasIndex(u => u.EmployeeCode).IsUnique();
@@ -58,14 +57,12 @@ namespace HRMS.Data
                       .HasMaxLength(20);
             });
 
-            // LeaveBalance configuration
             modelBuilder.Entity<LeaveBalance>(entity =>
             {
                 entity.Property(lb => lb.LeaveType)
                       .HasConversion<string>()
                       .HasMaxLength(20);
 
-                // Composite unique index: one record per user per leave type per year
                 entity.HasIndex(lb => new { lb.UserId, lb.LeaveType, lb.Year }).IsUnique();
 
                 entity.HasOne(lb => lb.User)
@@ -74,7 +71,6 @@ namespace HRMS.Data
                       .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // LeaveRequest configuration
             modelBuilder.Entity<LeaveRequest>(entity =>
             {
                 entity.Property(lr => lr.LeaveType)

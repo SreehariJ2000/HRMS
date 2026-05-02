@@ -22,7 +22,7 @@ namespace HRMS.ViewModels
         public DateTime ToDate { get; set; } = DateTime.Today;
 
         [Required(ErrorMessage = "Reason is required")]
-        [StringLength(500, MinimumLength = 10, ErrorMessage = "Reason must be between 10 and 500 characters")]
+        [StringLength(500, MinimumLength = 1, ErrorMessage = "Reason must be between 1 and 1000 characters")]
         [Display(Name = "Reason")]
         public string Reason { get; set; } = string.Empty;
     }

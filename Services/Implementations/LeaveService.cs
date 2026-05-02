@@ -25,7 +25,6 @@ namespace HRMS.Services.Implementations
             _userRepository = userRepository;
             _applicationUserService = applicationUserService;
         }
-
         public async Task<EmployeeDashboardVM> GetEmployeeDashboardAsync()
         {
             var userId = _applicationUserService.GetUserId() ?? throw new UnauthorizedAccessException("User not found.");
@@ -53,7 +52,6 @@ namespace HRMS.Services.Implementations
                 RecentRequests = requests.Take(10).Select(MapToDetailVM).ToList()
             };
         }
-
         public async Task<AdminDashboardVM> GetAdminDashboardAsync()
         {
             var today = DateTime.UtcNow.Date;
@@ -68,7 +66,6 @@ namespace HRMS.Services.Implementations
                 PendingLeaveRequests = pendingRequests.Select(MapToDetailVMWithUser).ToList()
             };
         }
-
         public async Task<(bool Success, string Message)> ApplyLeaveAsync(LeaveRequestVM model)
         {
             var userId = _applicationUserService.GetUserId() ?? throw new UnauthorizedAccessException("User not found.");
@@ -76,30 +73,25 @@ namespace HRMS.Services.Implementations
             if (user == null)
                 return (false, "User not found.");
 
-            // Validate: To date must be >= From date
             if (model.ToDate < model.FromDate)
                 return (false, "To Date cannot be earlier than From Date.");
 
-            // Validate: Cannot apply for dates before Date of Joining
             if (model.FromDate.Date < user.DateOfJoining.Date)
                 return (false, "Cannot apply for leave before your Date of Joining.");
 
-            // Calculate business days (excluding weekends)
             int requestedDays = DateHelper.CalculateBusinessDays(model.FromDate, model.ToDate);
             if (requestedDays <= 0)
                 return (false, "The selected date range contains only weekends. Please select valid working days.");
 
-            // Check for overlapping requests
             bool hasOverlap = await _leaveRequestRepository.HasOverlappingRequestAsync(userId, model.FromDate, model.ToDate);
             if (hasOverlap)
                 return (false, "You already have a leave request (Pending or Approved) that overlaps with the selected dates.");
 
-            // Check leave balance
             var currentYear = model.FromDate.Year;
             var leaveBalance = await _leaveBalanceRepository.GetAsync(userId, model.LeaveType, currentYear);
             if (leaveBalance == null)
             {
-                // Initialize balances if not found for this year
+
                 await _leaveBalanceRepository.InitializeBalancesForUserAsync(userId, currentYear);
                 leaveBalance = await _leaveBalanceRepository.GetAsync(userId, model.LeaveType, currentYear);
             }
@@ -110,7 +102,7 @@ namespace HRMS.Services.Implementations
             if (requestedDays > leaveBalance.Balance)
                 return (false, $"Insufficient leave balance. Available: {leaveBalance.Balance} days, Requested: {requestedDays} days.");
 
-            // Create leave request
+
             var leaveRequest = new LeaveRequest
             {
                 UserId = userId,
@@ -135,7 +127,6 @@ namespace HRMS.Services.Implementations
             if (request.Status != LeaveStatus.Pending)
                 return (false, "Only pending requests can be approved.");
 
-            // Deduct leave balance upon approval
             var leaveBalance = await _leaveBalanceRepository.GetAsync(request.UserId, request.LeaveType, request.FromDate.Year);
             if (leaveBalance == null)
                 return (false, "Leave balance record not found.");
@@ -176,6 +167,14 @@ namespace HRMS.Services.Implementations
             return requests.Select(MapToDetailVM).ToList();
         }
 
+        public async Task<List<LeaveRequestDetailVM>> GetAdminLeaveHistoryAsync()
+        {
+            var requests = await _leaveRequestRepository.GetAllRequestsAsync();
+            return requests.Where(r => r.Status != LeaveStatus.Pending)
+                           .Select(MapToDetailVMWithUser)
+                           .ToList();
+        }
+
         public async Task<List<LeaveRequestDetailVM>> GetAllPendingRequestsAsync()
         {
             var requests = await _leaveRequestRepository.GetPendingRequestsAsync();
@@ -196,9 +195,6 @@ namespace HRMS.Services.Implementations
                 Balance = b.Balance
             }).ToList();
         }
-
-        // --- Private Mapping Methods ---
-
         private static LeaveRequestDetailVM MapToDetailVM(LeaveRequest lr)
         {
             return new LeaveRequestDetailVM
@@ -215,7 +211,6 @@ namespace HRMS.Services.Implementations
                 CreatedAt = lr.CreationTime
             };
         }
-
         private static LeaveRequestDetailVM MapToDetailVMWithUser(LeaveRequest lr)
         {
             var vm = MapToDetailVM(lr);
@@ -227,7 +222,6 @@ namespace HRMS.Services.Implementations
             }
             return vm;
         }
-
         private static string FormatLeaveTypeName(LeaveType leaveType)
         {
             return leaveType switch

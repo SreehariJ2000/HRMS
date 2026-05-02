@@ -16,15 +16,12 @@ namespace HRMS.Controllers
             _employeeService = employeeService;
             _leaveService = leaveService;
         }
-
-        // --- Dashboard ---
         public async Task<IActionResult> Dashboard()
         {
             var model = await _leaveService.GetAdminDashboardAsync();
             return View(model);
         }
 
-        // --- Employee Management ---
         public async Task<IActionResult> Employees()
         {
             var employees = await _employeeService.GetAllEmployeesAsync();
@@ -69,7 +66,6 @@ namespace HRMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditEmployee(EmployeeVM model)
         {
-            // Password is optional on edit
             ModelState.Remove("Password");
 
             if (!ModelState.IsValid)
@@ -102,7 +98,6 @@ namespace HRMS.Controllers
             return RedirectToAction("Employees");
         }
 
-        // --- Leave Approval ---
         public async Task<IActionResult> LeaveRequests()
         {
             var requests = await _leaveService.GetAllPendingRequestsAsync();
@@ -133,6 +128,12 @@ namespace HRMS.Controllers
                 TempData["ErrorMessage"] = message;
 
             return RedirectToAction("LeaveRequests");
+        }
+
+        public async Task<IActionResult> LeaveHistory()
+        {
+            var history = await _leaveService.GetAdminLeaveHistoryAsync();
+            return View(history);
         }
     }
 }

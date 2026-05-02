@@ -105,73 +105,11 @@
                                 </td>
                             </tr>
 
-                            <!-- Approve Modal -->
-                            <div class="modal fade" id="approveModal-@request.Id" tabindex="-1">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <form asp-action="ApproveLeave" method="post">
-                                            @Html.AntiForgeryToken()
-                                            <input type="hidden" name="leaveRequestId" value="@request.Id" />
-                                            <div class="modal-header bg-success bg-opacity-10">
-                                                <h5 class="modal-title text-success">
-                                                    <i class="bi bi-check-circle"></i> Approve Leave
-                                                </h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p>Approve <strong>@request.EmployeeName</strong>'s leave request?</p>
-                                                <p class="text-muted">@request.FromDate.ToString("dd MMM") - @request.ToDate.ToString("dd MMM yyyy") (@request.RequestedDays days)</p>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Remarks (Optional)</label>
-                                                    <textarea name="adminRemarks" class="form-control" rows="2" placeholder="Add remarks..."></textarea>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                <button type="submit" class="btn btn-success">
-                                                    <i class="bi bi-check-lg"></i> Approve
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Reject Modal -->
-                            <div class="modal fade" id="rejectModal-@request.Id" tabindex="-1">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <form asp-action="RejectLeave" method="post">
-                                            @Html.AntiForgeryToken()
-                                            <input type="hidden" name="leaveRequestId" value="@request.Id" />
-                                            <div class="modal-header bg-danger bg-opacity-10">
-                                                <h5 class="modal-title text-danger">
-                                                    <i class="bi bi-x-circle"></i> Reject Leave
-                                                </h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p>Reject <strong>@request.EmployeeName</strong>'s leave request?</p>
-                                                <p class="text-muted">@request.FromDate.ToString("dd MMM") - @request.ToDate.ToString("dd MMM yyyy") (@request.RequestedDays days)</p>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Reason for Rejection (Optional)</label>
-                                                    <textarea name="adminRemarks" class="form-control" rows="2" placeholder="Add reason..."></textarea>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                <button type="submit" class="btn btn-danger">
-                                                    <i class="bi bi-x-lg"></i> Reject
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
                         }
                     </tbody>
                 </table>
             </div>
+
         }
         else
         {
@@ -183,3 +121,72 @@
         }
     </div>
 </div>
+
+@if (Model.PendingLeaveRequests.Any())
+{
+    @foreach (var request in Model.PendingLeaveRequests.Take(5))
+    {
+        <div class="modal fade" id="approveModal-@request.Id" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form asp-action="ApproveLeave" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="leaveRequestId" value="@request.Id" />
+                        <div class="modal-header bg-success bg-opacity-10">
+                            <h5 class="modal-title text-success">
+                                <i class="bi bi-check-circle"></i> Approve Leave
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Approve <strong>@request.EmployeeName</strong>'s leave request?</p>
+                            <p class="text-muted">@request.FromDate.ToString("dd MMM") - @request.ToDate.ToString("dd MMM yyyy") (@request.RequestedDays days)</p>
+                            <div class="mb-3">
+                                <label class="form-label">Remarks (Optional)</label>
+                                <textarea name="adminRemarks" class="form-control" rows="2" placeholder="Add remarks..."></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check-lg"></i> Approve
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="rejectModal-@request.Id" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form asp-action="RejectLeave" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="leaveRequestId" value="@request.Id" />
+                        <div class="modal-header bg-danger bg-opacity-10">
+                            <h5 class="modal-title text-danger">
+                                <i class="bi bi-x-circle"></i> Reject Leave
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Reject <strong>@request.EmployeeName</strong>'s leave request?</p>
+                            <p class="text-muted">@request.FromDate.ToString("dd MMM") - @request.ToDate.ToString("dd MMM yyyy") (@request.RequestedDays days)</p>
+                            <div class="mb-3">
+                                <label class="form-label">Reason for Rejection (Optional)</label>
+                                <textarea name="adminRemarks" class="form-control" rows="2" placeholder="Add reason..."></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-x-lg"></i> Reject
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+}

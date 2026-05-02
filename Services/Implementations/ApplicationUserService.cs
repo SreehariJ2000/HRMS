@@ -12,7 +12,6 @@ namespace HRMS.Services.Implementations
         {
             _httpContextAccessor = httpContextAccessor;
         }
-
         public int? GetUserId()
         {
             var userIdString = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -22,17 +21,14 @@ namespace HRMS.Services.Implementations
             }
             return null;
         }
-
         public string? GetUserEmail()
         {
             return _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Email);
         }
-
         public string? GetUserRole()
         {
             return _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Role);
         }
-
         public string? GetUserName()
         {
             return _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Name);

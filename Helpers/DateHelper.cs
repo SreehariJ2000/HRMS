@@ -2,10 +2,6 @@ namespace HRMS.Helpers
 {
     public static class DateHelper
     {
-        /// <summary>
-        /// Calculates the number of business days (excluding weekends) between two dates, inclusive.
-        /// If fromDate == toDate and it's a weekday, returns 1.
-        /// </summary>
         public static int CalculateBusinessDays(DateTime fromDate, DateTime toDate)
         {
             if (fromDate > toDate)

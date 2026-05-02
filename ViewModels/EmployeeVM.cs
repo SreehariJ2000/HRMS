@@ -17,7 +17,7 @@ namespace HRMS.ViewModels
         public string FirstName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Last Name is required")]
-        [StringLength(50, MinimumLength = 2, ErrorMessage = "Last Name must be between 2 and 50 characters")]
+        [StringLength(50, MinimumLength = 1, ErrorMessage = "Last Name must be between 1 and 50 characters")]
         [Display(Name = "Last Name")]
         public string LastName { get; set; } = string.Empty;
 

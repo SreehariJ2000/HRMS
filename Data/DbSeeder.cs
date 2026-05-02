@@ -11,10 +11,8 @@ namespace HRMS.Data
             using var scope = serviceProvider.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-            // Ensure the database is created and migrations are applied
             await context.Database.MigrateAsync();
 
-            // Seed Admin user if no users exist
             if (!await context.Users.AnyAsync())
             {
                 var admin = new User
@@ -32,7 +30,6 @@ namespace HRMS.Data
                 context.Users.Add(admin);
                 await context.SaveChangesAsync();
 
-                // Seed leave balances for admin (current year)
                 var currentYear = DateTime.UtcNow.Year;
                 var leaveBalances = new List<LeaveBalance>
                 {

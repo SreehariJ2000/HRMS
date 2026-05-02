@@ -1,0 +1,94 @@
+@model List<HRMS.ViewModels.LeaveRequestDetailVM>
+@{
+    ViewData["Title"] = "Leave History";
+}
+
+<div class="page-header">
+    <h2><i class="bi bi-clock-history"></i> Leave History</h2>
+    <p class="text-muted mb-0">View processed leave applications (Approved/Rejected)</p>
+</div>
+
+<div class="card fade-in">
+    <div class="card-body p-0">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Employee</th>
+                            <th>Department</th>
+                            <th>Leave Type</th>
+                            <th>Duration</th>
+                            <th>Days</th>
+                            <th>Applied On</th>
+                            <th>Status</th>
+                            <th>Admin Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var request in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <strong>@request.EmployeeName</strong><br />
+                                    <small class="text-muted">@request.EmployeeCode</small>
+                                </td>
+                                <td>@request.Department</td>
+                                <td>
+                                    @switch (request.LeaveType)
+                                    {
+                                        case HRMS.Models.Enums.LeaveType.CasualLeave:
+                                            <span class="badge bg-info">Casual</span>
+                                            break;
+                                        case HRMS.Models.Enums.LeaveType.SickLeave:
+                                            <span class="badge bg-warning text-dark">Sick</span>
+                                            break;
+                                        case HRMS.Models.Enums.LeaveType.EarnedLeave:
+                                            <span class="badge bg-success">Earned</span>
+                                            break;
+                                    }
+                                </td>
+                                <td>
+                                    @request.FromDate.ToString("dd MMM yyyy") - @request.ToDate.ToString("dd MMM yyyy")
+                                </td>
+                                <td><span class="fw-bold">@request.RequestedDays</span></td>
+                                <td>@request.CreatedAt.ToString("dd MMM yyyy")</td>
+                                <td>
+                                    @if (request.Status == HRMS.Models.Enums.LeaveStatus.Approved)
+                                    {
+                                        <span class="badge bg-success"><i class="bi bi-check-circle"></i> Approved</span>
+                                    }
+                                    else if (request.Status == HRMS.Models.Enums.LeaveStatus.Rejected)
+                                    {
+                                        <span class="badge bg-danger"><i class="bi bi-x-circle"></i> Rejected</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(request.AdminRemarks))
+                                    {
+                                        <span title="@request.AdminRemarks">
+                                            @(request.AdminRemarks.Length > 30 ? request.AdminRemarks.Substring(0, 30) + "..." : request.AdminRemarks)
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted fst-italic">None</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <i class="bi bi-clock-history"></i>
+                <h5>No Leave History</h5>
+                <p>There are no approved or rejected leave requests yet.</p>
+            </div>
+        }
+    </div>
+</div>

@@ -40,7 +40,6 @@ namespace HRMS.Controllers
                 return View(model);
             }
 
-            // Create claims
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),

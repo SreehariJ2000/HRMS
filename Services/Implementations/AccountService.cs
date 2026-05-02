@@ -12,7 +12,6 @@ namespace HRMS.Services.Implementations
         {
             _userRepository = userRepository;
         }
-
         public async Task<User?> AuthenticateAsync(string email, string password)
         {
             var user = await _userRepository.GetByEmailAsync(email);

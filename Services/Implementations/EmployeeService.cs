@@ -52,7 +52,6 @@ namespace HRMS.Services.Implementations
 
         public async Task<(bool Success, string Message)> CreateEmployeeAsync(EmployeeVM model)
         {
-            // Validate uniqueness
             if (await _userRepository.EmailExistsAsync(model.Email))
                 return (false, "An employee with this email already exists.");
 
@@ -76,7 +75,6 @@ namespace HRMS.Services.Implementations
 
             await _userRepository.AddAsync(user);
 
-            // Initialize leave balances for current year
             await _leaveBalanceRepository.InitializeBalancesForUserAsync(user.Id, DateTime.UtcNow.Year);
 
             return (true, "Employee created successfully.");
@@ -88,7 +86,6 @@ namespace HRMS.Services.Implementations
             if (user == null)
                 return (false, "Employee not found.");
 
-            // Check for email uniqueness (excluding current user)
             if (await _userRepository.EmailExistsAsync(model.Email, model.Id))
                 return (false, "An employee with this email already exists.");
 
@@ -102,7 +99,6 @@ namespace HRMS.Services.Implementations
             user.Department = model.Department;
             user.DateOfJoining = model.DateOfJoining;
 
-            // Only update password if a new one is provided
             if (!string.IsNullOrWhiteSpace(model.Password))
             {
                 user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password);
